@@ -83,4 +83,18 @@ loop3:    sw a0 (t0)              # paint pixel
           blt t0 t1 loop3         # are we done yet?
           ret                     # yes we are!!
 
+# a0: x
+# a1: y
+# a2: color
+# address = display + y * 320 + x = display + (y << 8) + (y << 6) + x
+paint_pixel:  li t0 0xff000000    # get base address for the display
+              slli t1 a1 8        # t1 = y * (2 ^ 8) = y << 8
+              slli t2 a1 6        # t2 = y * (2 ^ 6) = y << 6
+              add t1 t2 t1        # t1 = y * 320
+              add t1 t1 a0        # offset
+              add t0 t0 t1        # get final address
+              sb a2 (t0)          # paint pixel
+              ret
+
+
 .include "SYSTEMv13.s"
