@@ -58,7 +58,8 @@ loop2:   addi t0 t0 -2           # decrement element count
          slli t2 t0 2            # calculate address offset
          add t2 t1 t2            # calculate adddress
 
-         li a0 'K'               # set char to print (TODO)
+         srai a0 t0 1            # get element index
+         addi a0 a0 65           # calculate char
          lw a1 0(t2)             # get x position
          lw a2 4(t2)             # get y position
          li a3 0x3800            # set color (black font on green bg)
