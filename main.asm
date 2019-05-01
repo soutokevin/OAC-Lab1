@@ -12,6 +12,9 @@ main:    la t0 N
          la a1 C
          jal sorteio
 
+         li a0 0xff
+         jal paint
+
          la t0 N
          lw a0 (t0)
          la a1 C
@@ -63,6 +66,20 @@ loop2:   addi t0 t0 -2           # decrement element count
          ecall                   # print char
 
          bnez t0 loop2           # are we done yet?
+         ret                     # yes we are!!
+
+# fn (u8) -> ()
+# a0: color used to paint the display
+paint:   li t0 0xff000000        # base display address
+         li t1 76800             # number of pixels on the display (320x240)
+         add t1 t0 t1            # end display address (base + pixels)
+         slli t2 a0 8
+         or a0 a0 t2
+         slli t2 a0 16
+         or a0 a0 t2
+loop3:   sw a0 (t0)              # paint pixel
+         addi t0 t0 4            # increment address
+         blt t0 t1 loop3         # are we done yet?
          ret                     # yes we are!!
 
 .include "SYSTEMv13.s"
