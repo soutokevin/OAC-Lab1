@@ -5,6 +5,7 @@ C: .space 160
 .text
 
 .include "macros2.s"
+.include "macros.asm"
 M_SetEcall(exceptionHandling)
 
 main:     la t0 N
@@ -98,3 +99,4 @@ paint_pixel:  li t0 0xff000000    # get base address for the display
 
 
 .include "SYSTEMv13.s"
+.include "line.asm"
