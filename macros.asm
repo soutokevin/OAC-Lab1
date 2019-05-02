@@ -1,9 +1,12 @@
-#macro para valor absoluto
 .macro ABS(%reg)
-	bgez %reg return
+	bgez %reg end
   sub %reg zero %reg
-return:
+  end:
 .end_macro
 
-
-#macro para raiz 
+.macro LESS_THAN(%res, %left, %right)
+  slt %res %left %right
+  bnez %res end
+  li %res -1
+  end:
+.end_macro

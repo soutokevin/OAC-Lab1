@@ -11,7 +11,7 @@
 # t3 = y0 < y1 ? 1 : -1
 # t4 = (abs(x1 - x0) > abs(y1 - y0) ? abs(x1 - x0) : - abs(y1 - y0))/2
 
-Line:
+line:
 	addi sp sp -4
 	sw ra (sp)
 
@@ -20,18 +20,8 @@ Line:
 	sub t1 a3 a1 	 			# subtrai y1 - y0
 	ABS(t1)       			# pega o valor absoluto dessa subtração
 
-	bgt a2 a0 maiorX		# x0 < x1 ?
-	addi t2 zero -1			# se não for t2 recebe 1
-	j continua					# salta pela condição verdadeira
-maiorX:
-	addi t2 zero 1			# se x0 < x1  t2 recebe -1
-continua:
-	bgt a3 a1 maiorY    # y0 < y1
-	addi t3 zero -1      # se não for t3 recebe 1
-	j continua2					# salta pela condição verdaeira
-maiorY:
-	addi t3 zero 1     # se y0 < y1  t2 recebe -1
-continua2:
+	LESS_THAN(t2 a0 a2)
+	LESS_THAN(t3 a1 a3)
 	bgt t0 t1  atribui  # abs(x1 - x0) > abs(y1 - y0) ?
 	sub t4 zero t1			# - abs(y1 - y0) para deixar negativo
 	srai t4 t4 1 				# divide - abs(y1 - y0) por 2

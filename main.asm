@@ -1,6 +1,7 @@
 .data
 N: .word 6
 C: .space 160
+D: .space 1600
 
 .text
 
@@ -108,7 +109,7 @@ loop5:    lw a0 0(s4)             # x for current element from outer loop
           lw a1 4(s4)             # y for current element from outer loop
           lw a2 0(s5)             # x for current element from inner loop
           lw a3 4(s5)             # y for current element from inner loop
-          jal Line
+          jal line
 
           addi s5 s5 8            # point to the next element
           blt s5 s3 loop5         # inner loop check
