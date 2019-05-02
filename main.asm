@@ -19,6 +19,11 @@ main:     la t0 N
           la t0 N
           lw a0 (t0)
           la a1 C
+          jal rotas
+
+          la t0 N
+          lw a0 (t0)
+          la a1 C
           jal desenha
 
           li a7 10
@@ -83,6 +88,58 @@ loop3:    sw a0 (t0)              # paint pixel
           addi t0 t0 4            # increment address
           blt t0 t1 loop3         # are we done yet?
           ret                     # yes we are!!
+
+# fn (i32, [i32, i32]) -> ()
+# a0: number of elements
+# a1: pointer to the elements
+rotas:    slli t0 a0 3            # get the size of the list (in bytes)
+          add t0 t0 a1            # final address of the list
+          mv t1 a1                # copy list address
+
+loop4:    mv t2 t1                # element pointer for inner loop
+
+loop5:    lw a0 0(t1)             # print x for current element from outer loop
+          li a7 1                 # print int code
+          ecall
+
+          li a0 ' '
+          li a7 11
+          ecall
+
+          lw a0 4(t1)             # print y for current element from outer loop
+          li a7 1                 # print int code
+          ecall
+
+          li a0 ' '
+          li a7 11
+          ecall
+
+          lw a0 0(t2)             # print x for current element from inner loop
+          li a7 1                 # print int code
+          ecall
+
+          li a0 ' '
+          li a7 11
+          ecall
+
+          lw a0 4(t2)             # print y for current element from inner loop
+          li a7 1                 # print int code
+          ecall
+
+          li a0 10                # \n ascii code
+          li a7 11                # print char code
+          ecall
+
+          addi t2 t2 8            # point to the next element
+          blt t2 t0 loop5
+
+          li a0 10                # \n ascii code
+          li a7 11                # print char code
+          ecall
+
+          addi t1 t1 8            # increment outer loop counter
+          blt t1 t0 loop4
+          ret
 
 # a0: x
 # a1: y
