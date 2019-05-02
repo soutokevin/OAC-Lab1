@@ -104,17 +104,17 @@ rotas:    addi sp sp 16
 
 loop4:    mv s5 s4                # element pointer for inner loop
 
-loop5:    lw a0 0(s4)             # print x for current element from outer loop
-          lw a1 4(s4)             # print y for current element from outer loop
-          lw a2 0(s5)             # print x for current element from inner loop
-          lw a3 4(s5)             # print y for current element from inner loop
+loop5:    lw a0 0(s4)             # x for current element from outer loop
+          lw a1 4(s4)             # y for current element from outer loop
+          lw a2 0(s5)             # x for current element from inner loop
+          lw a3 4(s5)             # y for current element from inner loop
           jal Line
 
           addi s5 s5 8            # point to the next element
-          blt s5 s3 loop5
+          blt s5 s3 loop5         # inner loop check
 
           addi s4 s4 8            # increment outer loop counter
-          blt s4 s3 loop4
+          blt s4 s3 loop4         # outer loop check
 
           lw s5 12(sp)
           lw s4  8(sp)
