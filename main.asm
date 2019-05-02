@@ -92,53 +92,35 @@ loop3:    sw a0 (t0)              # paint pixel
 # fn (i32, [i32, i32]) -> ()
 # a0: number of elements
 # a1: pointer to the elements
-rotas:    slli t0 a0 3            # get the size of the list (in bytes)
-          add t0 t0 a1            # final address of the list
-          mv t1 a1                # copy list address
+rotas:    addi sp sp 16
+          sw ra  0(sp)
+          sw s3  4(sp)
+          sw s4  8(sp)
+          sw s5 12(sp)
 
-loop4:    mv t2 t1                # element pointer for inner loop
+          slli s3 a0 3            # get the size of the list (in bytes)
+          add s3 s3 a1            # final address of the list
+          mv s4 a1                # copy list address
 
-loop5:    lw a0 0(t1)             # print x for current element from outer loop
-          li a7 1                 # print int code
-          ecall
+loop4:    mv s5 s4                # element pointer for inner loop
 
-          li a0 ' '
-          li a7 11
-          ecall
+loop5:    lw a0 0(s4)             # print x for current element from outer loop
+          lw a1 4(s4)             # print y for current element from outer loop
+          lw a2 0(s5)             # print x for current element from inner loop
+          lw a3 4(s5)             # print y for current element from inner loop
+          jal Line
 
-          lw a0 4(t1)             # print y for current element from outer loop
-          li a7 1                 # print int code
-          ecall
+          addi s5 s5 8            # point to the next element
+          blt s5 s3 loop5
 
-          li a0 ' '
-          li a7 11
-          ecall
+          addi s4 s4 8            # increment outer loop counter
+          blt s4 s3 loop4
 
-          lw a0 0(t2)             # print x for current element from inner loop
-          li a7 1                 # print int code
-          ecall
-
-          li a0 ' '
-          li a7 11
-          ecall
-
-          lw a0 4(t2)             # print y for current element from inner loop
-          li a7 1                 # print int code
-          ecall
-
-          li a0 10                # \n ascii code
-          li a7 11                # print char code
-          ecall
-
-          addi t2 t2 8            # point to the next element
-          blt t2 t0 loop5
-
-          li a0 10                # \n ascii code
-          li a7 11                # print char code
-          ecall
-
-          addi t1 t1 8            # increment outer loop counter
-          blt t1 t0 loop4
+          lw s5 12(sp)
+          lw s4  8(sp)
+          lw s3  4(sp)
+          lw ra  0(sp)
+          addi sp sp 16
           ret
 
 # a0: x
