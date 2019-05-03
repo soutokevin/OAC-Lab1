@@ -12,20 +12,20 @@ M_SetEcall(exceptionHandling)
 main:     la t0 N
           lw a0 (t0)
           la a1 C
-          jal sorteio
+          call sorteio
 
           li a0 0xff
-          jal paint
+          call paint
 
           la t0 N
           lw a0 (t0)
           la a1 C
-          jal rotas
+          call rotas
 
           la t0 N
           lw a0 (t0)
           la a1 C
-          jal desenha
+          call desenha
 
           li a7 10
           ecall
@@ -95,31 +95,32 @@ loop3:    sw a0 (t0)              # paint pixel
 # a1: pointer to the elements
 rotas:    addi sp sp 16
           sw ra  0(sp)
-          sw s3  4(sp)
-          sw s4  8(sp)
-          sw s5 12(sp)
+          sw s1  4(sp)
+          sw s2  8(sp)
+          sw s3 12(sp)
 
-          slli s3 a0 3            # get the size of the list (in bytes)
-          add s3 s3 a1            # final address of the list
-          mv s4 a1                # copy list address
+          slli s1 a0 3            # get the size of the list (in bytes)
+          add s1 s1 a1            # final address of the list
+          mv s2 a1                # copy list address
 
-loop4:    mv s5 s4                # element pointer for inner loop
+loop4:    mv s3 s2                # element pointer for inner loop
 
-loop5:    lw a0 0(s4)             # x for current element from outer loop
-          lw a1 4(s4)             # y for current element from outer loop
-          lw a2 0(s5)             # x for current element from inner loop
-          lw a3 4(s5)             # y for current element from inner loop
-          jal line
+loop5:    lw a0 0(s2)             # x for current element from outer loop
+          lw a1 4(s2)             # y for current element from outer loop
+          lw a2 0(s3)             # x for current element from inner loop
+          lw a3 4(s3)             # y for current element from inner loop
+          li a4 0x00              # set line color (black)
+          call line
 
-          addi s5 s5 8            # point to the next element
-          blt s5 s3 loop5         # inner loop check
+          addi s3 s3 8            # point to the next element
+          blt s3 s1 loop5         # inner loop check
 
-          addi s4 s4 8            # increment outer loop counter
-          blt s4 s3 loop4         # outer loop check
+          addi s2 s2 8            # increment outer loop counter
+          blt s2 s1 loop4         # outer loop check
 
-          lw s5 12(sp)
-          lw s4  8(sp)
-          lw s3  4(sp)
+          lw s3 12(sp)
+          lw s2  8(sp)
+          lw s1  4(sp)
           lw ra  0(sp)
           addi sp sp 16
           ret

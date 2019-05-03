@@ -5,30 +5,43 @@
 # a2 = x1
 # a3 = y1
 # a4 = cor
-# t0 = abs(x1 - x0)
-# t1 = abs(y1 - y0)
-# t2 = x0 < x1 ? 1 : -1
-# t3 = y0 < y1 ? 1 : -1
-# t4 = (abs(x1 - x0) > abs(y1 - y0) ? abs(x1 - x0) : - abs(y1 - y0))/2
+# s1 = abs(x1 - x0)
+# s2 = abs(y1 - y0)
+# s3 = x0 < x1 ? 1 : -1
+# s4 = y0 < y1 ? 1 : -1
+# s5 = (abs(x1 - x0) > abs(y1 - y0) ? abs(x1 - x0) : - abs(y1 - y0))/2
 
 line:
-	addi sp sp -4
-	sw ra (sp)
+	addi sp sp -24
+	sw ra  0(sp)
+	sw s1  4(sp)
+	sw s2  8(sp)
+	sw s3 12(sp)
+	sw s4 16(sp)
+	sw s5 20(sp)
 
-	sub t0 a2 a0  			# subtrai x1 - x0
-	ABS(t0)							# pega o valor absoluto dessa subtração
-	sub t1 a3 a1 	 			# subtrai y1 - y0
-	ABS(t1)       			# pega o valor absoluto dessa subtração
+	sub s1 a2 a0  			# subtrai x1 - x0
+	ABS(s1)							# pega o valor absoluto dessa subtração
+	sub s2 a3 a1 	 			# subtrai y1 - y0
+	ABS(s2)       			# pega o valor absoluto dessa subtração
 
-	LESS_THAN(t2 a0 a2)
-	LESS_THAN(t3 a1 a3)
-	bgt t0 t1  atribui  # abs(x1 - x0) > abs(y1 - y0) ?
-	sub t4 zero t1			# - abs(y1 - y0) para deixar negativo
-	srai t4 t4 1 				# divide - abs(y1 - y0) por 2
-	j continua3
+	# s3 = a0 < a2 ? 1 : -1
+	slt s3 a0 a2
+	slli s3 s3 1
+	addi s3 s3 -1
+
+	# s4 = a1 < a2 ? 1 : -1
+	slt s4 a1 a3
+	slli s4 s4 1
+	addi s4 s4 -1
+
+	bgt s1 s2  atribui  # abs(x1 - x0) > abs(y1 - y0) ?
+	sub s5 zero s2			# - abs(y1 - y0) para deixar negativo
+	srai s5 s5 1 				# divide - abs(y1 - y0) por 2
+	j loop1
+
 atribui:
-	srai t4 t0 1        # divide abs(x1 - x0) por 2
-continua3:
+	srai s5 s1 1        # divide abs(x1 - x0) por 2
 
 loop1:
 	jal pixel
@@ -36,28 +49,33 @@ loop1:
 	bne a1 a3 calcula
 	j exit
 calcula:
-	mv t5 t4
-	sub t6 zero t0
+	mv t5 s5
+	sub t6 zero s1
 	ble t5 t6 proximo
-	sub t4 t4 t1
-	add a0 a0 t2
+	sub s5 s5 s2
+	add a0 a0 s3
 proximo:
-	bge t5 t1  loop1
-	add t4 t4 t0
-	add a1 a1 t3
+	bge t5 s2 loop1
+	add s5 s5 s1
+	add a1 a1 s4
 	j loop1
 
 exit:
-	lw ra 0(sp)
-	addi sp sp 4
+	lw s5 20(sp)
+	lw s4 16(sp)
+	lw s3 12(sp)
+	lw s2  8(sp)
+	lw s1  4(sp)
+	lw ra  0(sp)
+	addi sp sp 24
   ret
 
 
 pixel:
-  li s1 320
-  mul s1 a1 s1
-  add s1 s1 a0
-  li s2 0xFF000000
-  add s1 s1 s2
-  sb a4 (s1)
+  li t0 320
+  mul t0 a1 t0
+  add t0 t0 a0
+  li t1 0xFF000000
+  add t0 t0 t1
+  sb a4 (t0)
   ret
