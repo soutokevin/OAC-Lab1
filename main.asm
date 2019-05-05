@@ -171,7 +171,7 @@ paint_pixel:        li t0 0xff000000              # get base address for the dis
                     sb a2 (t0)                    # paint pixel
                     ret
 
-                    # fn()
+                    # fn ()
 print_matrix:       la t0 D
                     li t1 0
                     li t2 0
