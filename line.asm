@@ -4,13 +4,12 @@
 										# a2 = x1
 										# a3 = y1
 										# a4 = cor
-line:               addi sp sp -24
-					          sw ra  0(sp)
-					          sw s1  4(sp)                  # s1 = abs(x1 - x0)
-					          sw s2  8(sp)                  # s2 = abs(y1 - y0)
-					          sw s3 12(sp)                  # s3 = x0 < x1 ? 1 : -1
-					          sw s4 16(sp)                  # s4 = y0 < y1 ? 1 : -1
-					          sw s5 20(sp)                  # s5 = (s1 > s2 ? s1 : -s2) / 2
+line:               addi sp sp -20
+					          sw s1  0(sp)                  # s1 = abs(x1 - x0)
+					          sw s2  4(sp)                  # s2 = abs(y1 - y0)
+					          sw s3  8(sp)                  # s3 = x0 < x1 ? 1 : -1
+					          sw s4 12(sp)                  # s4 = y0 < y1 ? 1 : -1
+					          sw s5 16(sp)                  # s5 = (s1 > s2 ? s1 : -s2) / 2
 					          li t0 0xFF000000
 
 					          sub s1 a2 a0  			          # subtrai x1 - x0
@@ -44,13 +43,12 @@ loop1:              li t1 320
 					          bne a0 a2 calcula
 					          bne a1 a3 calcula
 
-                    lw s5 20(sp)
-					          lw s4 16(sp)
-					          lw s3 12(sp)
-					          lw s2  8(sp)
-					          lw s1  4(sp)
-					          lw ra  0(sp)
-					          addi sp sp 24
+                    lw s5 16(sp)
+					          lw s4 12(sp)
+					          lw s3  8(sp)
+					          lw s2  4(sp)
+					          lw s1  0(sp)
+					          addi sp sp 20
 					          ret
 
 calcula:            mv t5 s5
