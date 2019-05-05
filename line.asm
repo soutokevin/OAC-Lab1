@@ -11,6 +11,7 @@ line:               addi sp sp -24
 					          sw s3 12(sp)                  # s3 = x0 < x1 ? 1 : -1
 					          sw s4 16(sp)                  # s4 = y0 < y1 ? 1 : -1
 					          sw s5 20(sp)                  # s5 = (s1 > s2 ? s1 : -s2) / 2
+					          li t0 0xFF000000
 
 					          sub s1 a2 a0  			          # subtrai x1 - x0
 					          ABS(s1)							          # pega o valor absoluto dessa subtração
@@ -34,7 +35,12 @@ line:               addi sp sp -24
 
 atribui:            srai s5 s1 1                  # divide abs(x1 - x0) por 2
 
-loop1:              call pixel
+loop1:              li t1 320
+										mul t1 a1 t1
+					          add t1 t1 a0
+					          add t1 t1 t0
+					          sb a4 (t1)
+
 					          bne a0 a2 calcula
 					          bne a1 a3 calcula
 
@@ -58,10 +64,3 @@ proximo:            bge t5 s2 loop1
 					          add a1 a1 s4
 					          j loop1
 
-pixel:              li t0 320
-					          mul t0 a1 t0
-					          add t0 t0 a0
-					          li t1 0xFF000000
-					          add t0 t0 t1
-					          sb a4 (t0)
-					          ret
