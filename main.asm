@@ -223,4 +223,3 @@ pm_loop:            mul t4 t2 t3                  # line offset
 
 .include "SYSTEMv13.s"
 .include "line.asm"
-.include "distancia.asm"
