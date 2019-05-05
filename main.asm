@@ -23,6 +23,8 @@ main:               la t0 N
                     la a1 C
                     call rotas
 
+                    # call print_matrix
+
                     la t0 N
                     lw a0 (t0)
                     la a1 C
@@ -94,12 +96,14 @@ loop3:              sw a0 (t0)                    # paint pixel
                     # fn (u32, [u32, u32])
                     # a0: number of elements
                     # a1: pointer to the elements
-rotas:              addi sp sp 16
+rotas:              addi sp sp 20
                     sw ra  0(sp)
                     sw s1  4(sp)
                     sw s2  8(sp)
                     sw s3 12(sp)
+                    sw s4 16(sp)
 
+                    mv s4 a1
                     slli s1 a0 3                  # get the size of the list (in bytes)
                     add s1 s1 a1                  # final address of the list
                     mv s2 a1                      # copy list address
@@ -113,17 +117,44 @@ loop5:              lw a0 0(s2)                   # x for current element from o
                     li a4 0x00                    # set line color (black)
                     call line
 
+                    lw a0 0(s2)                   # x for current element from outer loop
+                    lw a1 4(s2)                   # y for current element from outer loop
+                    lw a2 0(s3)                   # x for current element from inner loop
+                    lw a3 4(s3)                   # y for current element from inner loop
+                    call distancia
+
+                    sub t0 s2 s4                  # inner loop offset
+                    sub t1 s3 s4                  # outer loop offset
+                    srai t0 t0 3                  # inner loop position
+                    srai t1 t1 3                  # outer loop position
+
+                    la t2 D
+                    li t3 20
+
+                    mul t4 t3 t1
+                    add t4 t4 t0
+                    slli t4 t4 2
+                    add t4 t4 t2
+                    fsw fa0 (t4)
+
+                    mul t4 t3 t0
+                    add t4 t4 t1
+                    slli t4 t4 2
+                    add t4 t4 t2
+                    fsw fa0 (t4)
+
                     addi s3 s3 8                  # point to the next element
                     blt s3 s1 loop5               # inner loop check
 
                     addi s2 s2 8                  # increment outer loop counter
                     blt s2 s1 loop4               # outer loop check
 
+                    lw s4 16(sp)
                     lw s3 12(sp)
                     lw s2  8(sp)
                     lw s1  4(sp)
                     lw ra  0(sp)
-                    addi sp sp 16
+                    addi sp sp 20
                     ret
 
                     # fn (u32, u32, u8)
@@ -140,5 +171,42 @@ paint_pixel:        li t0 0xff000000              # get base address for the dis
                     sb a2 (t0)                    # paint pixel
                     ret
 
+                    # fn()
+print_matrix:       la t0 D
+                    li t1 0
+                    li t2 0
+                    li t3 20
+
+pm_loop:            mul t4 t2 t3                  # line offset
+                    add t4 t4 t1                  # total offset
+                    slli t4 t4 2                  # offset in bytes
+                    add t4 t4 t0                  # final address
+                    flw fa0 (t4)
+                    li a7 2
+                    ecall
+
+                    li a0 ' '
+                    li a7 11
+                    ecall
+
+                    addi t1 t1 1
+                    bne t1 t3 pm_loop
+
+                    li a0 10
+                    li a7 11
+                    ecall
+
+                    li t1 0
+                    addi t2 t2 1
+                    bne t2 t3 pm_loop
+
+                    li a0 10
+                    li a7 11
+                    ecall
+
+                    ret
+
+
 .include "SYSTEMv13.s"
 .include "line.asm"
+.include "distancia.asm"

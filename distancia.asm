@@ -7,8 +7,7 @@ distancia:
   mul t0 t0 t0
   sub t1 a1 a3
   mul t1 t1 t1
-  add t0 t0 t1 
+  add t0 t0 t1
   fcvt.s.w ft0 t0
-  fsqrt.s ft0 ft0 
-  fcvt.w.s t0 ft0
+  fsqrt.s fa0 ft0
   ret
