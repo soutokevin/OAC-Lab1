@@ -190,6 +190,7 @@ print_matrix:       la t0 D
                     li t1 0
                     li t2 0
                     li t3 20
+                    lw t5 N
 
 pm_loop:            mul t4 t2 t3                  # line offset
                     add t4 t4 t1                  # total offset
@@ -204,7 +205,7 @@ pm_loop:            mul t4 t2 t3                  # line offset
                     ecall
 
                     addi t1 t1 1
-                    bne t1 t3 pm_loop
+                    blt t1 t5 pm_loop
 
                     li a0 10
                     li a7 11
@@ -212,11 +213,7 @@ pm_loop:            mul t4 t2 t3                  # line offset
 
                     li t1 0
                     addi t2 t2 1
-                    bne t2 t3 pm_loop
-
-                    li a0 10
-                    li a7 11
-                    ecall
+                    blt t2 t5 pm_loop
 
                     ret
 
