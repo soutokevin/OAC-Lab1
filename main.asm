@@ -1,14 +1,14 @@
-.data
+                    .data
 
-N: .word 6
-C: .space 160
-D: .space 1600
+N:                  .word 6
+C:                  .space 160
+D:                  .space 1600
 
-.text
+                    .text
 
-.include "macros2.s"
-.include "macros.asm"
-M_SetEcall(exceptionHandling)
+                    .include "macros2.s"
+                    .include "macros.asm"
+                    M_SetEcall(exceptionHandling)
 
 main:               la t0 N
                     lw a0 (t0)
@@ -272,4 +272,4 @@ proximo:            bge t1 t3 loop1
 					          add a1 a1 t5
 					          j loop1
 
-.include "SYSTEMv13.s"
+                    .include "SYSTEMv13.s"
