@@ -96,7 +96,7 @@ loop3:              sw a0 (t0)                    # paint pixel
                     # fn (u32, [u32, u32])
                     # a0: number of elements
                     # a1: pointer to the elements
-rotas:              addi sp sp 20
+rotas:              addi sp sp -20
                     sw ra  0(sp)
                     sw s1  4(sp)
                     sw s2  8(sp)
