@@ -306,9 +306,9 @@ permutation:        addi sp sp -20
 
 olokinho:           mv a1 s1
 
-show:               li a7, 1                      # printa o rolê
+show:               #li a7, 1                      # printa o rolê
                     lw a0 0(a1)
-                    ecall
+                    #ecall
 
                     lw t2 -4(a1)
                     li a2 20
@@ -324,11 +324,13 @@ show:               li a7, 1                      # printa o rolê
                     addi a1 a1 4
                     bne t3 zero show
 
-                    call update_path
+                    slli a0 a0 2
+                    la t0 D
+                    add t0 a0 t0
+                    flw ft0 (t0)
+                    fadd.s fa0 ft0 fa0
 
-                    li a0 10
-                    li a7 11
-                    ecall
+                    call update_path
 
                     la t3 z
                     flw fa0 (t3)
