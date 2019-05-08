@@ -6,6 +6,7 @@ D:                  .space 1600
 array:              .space 1600
 z:                  .float 0.0
 lowest:             .float 9999999999999.9
+lowest_array:       .space 1600
                     .word 0
 arrei:              .word 1 2 3 4 5 6 7 8 9 10 11
                           12 13 14 15 16 17 18 19
@@ -38,9 +39,6 @@ main:               la t0 N
                     la t0 lowest
                     flw fa0 (t0)
                     li a7 2
-                    ecall
-
-                    li a7 10
                     ecall
 
                     la t0 N
@@ -330,6 +328,7 @@ show:               #li a7, 1                      # printa o rolê
                     flw ft0 (t0)
                     fadd.s fa0 ft0 fa0
 
+                    addi a1 s1 -4
                     call update_path
 
                     la t3 z
@@ -390,6 +389,7 @@ update_path:        la t0 lowest
                     flt.s t1 fa0 ft0
                     beqz t1 end
                     fsw fa0 (t0)
+
 end:                ret
 
 
