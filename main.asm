@@ -3,9 +3,12 @@
 N:                  .word 6
 C:                  .space 160
 D:                  .space 1600
-array:              .word 0 0 0 0 0 0 0 0 0 0
-                          0 0 0 0 0 0 0 0 0 0
-arrei:              .word 3 1 2
+array:              .space 1600
+z:                  .float 0.0
+biggest:            .float 9999999.9
+                    .word 0
+arrei:              .word 1 2 3 4 5 6 7 8 9 10 11
+                          12 13 14 15 16 17 18 19
 
                     .text
 
@@ -28,7 +31,7 @@ main:               la t0 N
 
                     # call print_matrix
 
-                    li a0 3
+                    lw a0 N
                     la a1 arrei
                     call permutation
 
@@ -291,15 +294,39 @@ permutation:        mv s0 a0                      # coloca size em s0
                     add t1 zero zero              # t1 = i
 
 olokinho:           mv a1 s1
+
 show:               li a7, 1                      # printa o rolê
                     lw a0 0(a1)
                     ecall
+
+                    lw t2 -4(a1)
+                    li a2 20
+                    mul t2 t2 a2
+                    add t2 t2 a0
+                    slli t2 t2 2
+                    la a2 D
+                    add t2 t2 a2
+                    flw ft0 (t2)
+                    fadd.s fa0 ft0 fa0
+
                     addi t3 t3 -1
                     addi a1 a1 4
                     bne t3 zero show
+
+                    li a0 ' '
+                    li a7 11
+                    ecall
+
+                    li a7 2
+                    ecall
+
                     li a0 10
                     li a7 11
                     ecall
+
+                    la t3 z
+                    flw fa0 (t3)
+                    flw ft0 (t3)
                     mv t3 s0                      # coloca size em t3 para fazer o loop do show
 
 while:              bge t1 s0 exit                # se i >= 3 sai do loop
