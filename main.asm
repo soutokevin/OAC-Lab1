@@ -5,7 +5,7 @@ C:                  .space 160
 D:                  .space 1600
 array:              .space 1600
 z:                  .float 0.0
-biggest:            .float 9999999999999.9
+lowest:             .float 9999999999999.9
                     .word 0
 arrei:              .word 1 2 3 4 5 6 7 8 9 10 11
                           12 13 14 15 16 17 18 19
@@ -34,6 +34,11 @@ main:               la t0 N
                     lw a0 N
                     la a1 arrei
                     call permutation
+
+                    la t0 lowest
+                    flw fa0 (t0)
+                    li a7 2
+                    ecall
 
                     li a7 10
                     ecall
@@ -319,12 +324,7 @@ show:               li a7, 1                      # printa o rolê
                     addi a1 a1 4
                     bne t3 zero show
 
-                    li a0 ' '
-                    li a7 11
-                    ecall
-
-                    li a7 2
-                    ecall
+                    call update_path
 
                     li a0 10
                     li a7 11
@@ -382,5 +382,13 @@ exit:               lw ra  0(sp)
                     lw s2 12(sp)
                     addi sp sp 20
                     ret
+
+update_path:        la t0 lowest
+                    flw ft0 (t0)
+                    flt.s t1 fa0 ft0
+                    beqz t1 end
+                    fsw fa0 (t0)
+end:                ret
+
 
                     .include "SYSTEMv13.s"
