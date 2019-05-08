@@ -1,15 +1,16 @@
                     .data
 
-N:                  .word 6
+N:                  .word 7
 C:                  .space 160
+c_lower:            .space 160
 D:                  .space 1600
 array:              .space 1600
 z:                  .float 0.0
 lowest:             .float 9999999999999.9
-lowest_array:       .space 1600
+lowest_array:       .space 84
+possible_array:     .space 84
                     .word 0
-arrei:              .word 1 2 3 4 5 6 7 8 9 10 11
-                          12 13 14 15 16 17 18 19
+arrei:              .word 1 2 3 4 5 6 0 
 
                     .text
 
@@ -41,6 +42,54 @@ main:               la t0 N
                     li a7 2
                     ecall
 
+                    li a7 11
+                    li a0 10
+                    ecall
+
+                    
+                    la t0 N
+                    lw s3 (t0)
+                    la s4 lowest_array
+                    la s1 C
+
+                    # a0 = x0
+										# a1 = y0
+										# a2 = x1
+										# a3 = y1
+										# a4 = cor
+                    
+loopa1:             beq s3 zero saii
+                    lw t2 0(s4)
+                    
+                    slli t2 t2 3                  
+                    add t2 t2 s1                  # t2 c + slli 3
+                    lw a0 0(t2)                   # a0 = x0
+                    lw a1 4(t2)                   # a1 = y0
+
+                    lw t2 4(s4)
+                    slli t2 t2 3                  
+                    add t2 t2 s1                  # t2 c + slli 3
+                    lw a2 0(t2)                   # a0 = x0
+                    lw a3 4(t2)                   # a1 = y0
+
+                    #li a7 1
+                    #ecall
+
+                    li a4 0x07
+
+                    call line
+                    lw a0 0(s4)
+                    li a7 1
+                    ecall
+                    li a0 9
+                    li a7 11
+                    ecall
+
+                    addi s3 s3 -1
+                    addi s4 s4 4
+
+                    j loopa1
+saii:
                     la t0 N
                     lw a0 (t0)
                     la a1 C
@@ -303,12 +352,14 @@ permutation:        addi sp sp -20
                     li s2 0                       # s2 = i
 
 olokinho:           mv a1 s1
+                    la tp possible_array
 
 show:               #li a7, 1                      # printa o rolê
                     lw a0 0(a1)
                     #ecall
 
                     lw t2 -4(a1)
+                    sw t2 0(tp)
                     li a2 20
                     mul t2 t2 a2
                     add t2 t2 a0
@@ -320,6 +371,7 @@ show:               #li a7, 1                      # printa o rolê
 
                     addi t3 t3 -1
                     addi a1 a1 4
+                    addi tp tp 4
                     bne t3 zero show
 
                     slli a0 a0 2
@@ -387,8 +439,18 @@ exit:               lw ra  0(sp)
 update_path:        la t0 lowest
                     flw ft0 (t0)
                     flt.s t1 fa0 ft0
+                    la tp possible_array
+                    la a6 lowest_array
+                    li a7 21
                     beqz t1 end
                     fsw fa0 (t0)
+loopinho:           beq a7 zero end 
+                    lw a5 0(tp)
+                    sw a5 0(a6)
+                    addi tp tp 4
+                    addi a6 a6 4
+                    addi a7 a7 -1
+                    j loopinho
 
 end:                ret
 
