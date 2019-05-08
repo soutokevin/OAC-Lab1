@@ -5,7 +5,7 @@ C:                  .space 160
 D:                  .space 1600
 array:              .space 1600
 z:                  .float 0.0
-biggest:            .float 9999999.9
+biggest:            .float 9999999999999.9
                     .word 0
 arrei:              .word 1 2 3 4 5 6 7 8 9 10 11
                           12 13 14 15 16 17 18 19
@@ -288,10 +288,16 @@ proximo:            bge t1 t3 loop1
                     # fn (i32, [i32])
                     # a0: number of elements on the array
                     # a1: array of values to permutate
-permutation:        mv s0 a0                      # coloca size em s0
+permutation:        addi sp sp -20
+                    sw ra  0(sp)
+                    sw s0  4(sp)
+                    sw s1  8(sp)
+                    sw s2 12(sp)
+
+                    mv s0 a0                      # coloca size em s0
                     mv s1 a1                      # coloca array em s1
                     mv t3 s0                      # coloca size em t3 para fazer o loop do show
-                    add t1 zero zero              # t1 = i
+                    li s2 0                       # s2 = i
 
 olokinho:           mv a1 s1
 
@@ -329,17 +335,17 @@ show:               li a7, 1                      # printa o rolê
                     flw ft0 (t3)
                     mv t3 s0                      # coloca size em t3 para fazer o loop do show
 
-while:              bge t1 s0 exit                # se i >= 3 sai do loop
-                    slli t4 t1 2                  # t4 = i * 4
+while:              bge s2 s0 exit                # se i >= 3 sai do loop
+                    slli t4 s2 2                  # t4 = i * 4
                     la t0 array                   # pega o array da memoria
                     add t0 t0 t4
                     lw t4 0(t0)                   # t4 = c[i]
-                    bge t4 t1 pula
+                    bge t4 s2 pula
                     li a7 2
-                    rem a7 t1 a7
+                    rem a7 s2 a7
                     bne a7 zero impar
                     mv a0 s1                      # a0 = endereco de A[0]
-                    slli t4 t1 2
+                    slli t4 s2 2
                     add a1 s1 t4                  # a1 = endereco de A[i]
                     lw t5 0(a0)
                     lw t6 0(a1)
@@ -350,26 +356,31 @@ while:              bge t1 s0 exit                # se i >= 3 sai do loop
 impar:              slli t4 t4 2
                     add t4 s1 t4                  # t4 = A[c[i]]
                     mv a0 t4                      # a0 = endereco de A[c[i]]
-                    slli t4 t1 2
+                    slli t4 s2 2
                     add a1 s1 t4                  # a1 = endereco de A[i]
                     lw t5 0(a0)
                     lw t6 0(a1)
                     sw t6 0(a0)
                     sw t5 0(a1)
 
-continua:           slli t4 t1 2                  # t4 = i * 4
+continua:           slli t4 s2 2                  # t4 = i * 4
                     la t0 array                   # pega o array da memoria
                     add t0 t0 t4
                     lw t4 0(t0)                   # t4 = c[i]
                     addi t4 t4 1
                     sw t4 0(t0)
-                    add t1 zero zero
+                    add s2 zero zero
                     j olokinho
 
 pula:               sw zero 0(t0)
-                    addi t1 t1 1
+                    addi s2 s2 1
                     j while
 
-exit:               ret
+exit:               lw ra  0(sp)
+                    lw s0  4(sp)
+                    lw s1  8(sp)
+                    lw s2 12(sp)
+                    addi sp sp 20
+                    ret
 
                     .include "SYSTEMv13.s"
