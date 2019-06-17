@@ -10,7 +10,7 @@ lowest:             .float 9999999999999.9
 lowest_array:       .space 84
 possible_array:     .space 84
                     .word 0
-arrei:              .word 1 2 3 4 5 6 0 
+arrei:              .word 1 2 3 4 5 6 0
 
                     .text
 
@@ -40,13 +40,13 @@ main:               la t0 N
                     la t0 lowest
                     flw fa0 (t0)
                     li a7 2
-                    ecall
+                    M_Ecall
 
                     li a7 11
                     li a0 10
-                    ecall
+                    M_Ecall
 
-                    
+
                     la t0 N
                     lw s3 (t0)
                     la s4 lowest_array
@@ -57,33 +57,33 @@ main:               la t0 N
 										# a2 = x1
 										# a3 = y1
 										# a4 = cor
-                    
+
 loopa1:             beq s3 zero saii
                     lw t2 0(s4)
-                    
-                    slli t2 t2 3                  
+
+                    slli t2 t2 3
                     add t2 t2 s1                  # t2 c + slli 3
                     lw a0 0(t2)                   # a0 = x0
                     lw a1 4(t2)                   # a1 = y0
 
                     lw t2 4(s4)
-                    slli t2 t2 3                  
+                    slli t2 t2 3
                     add t2 t2 s1                  # t2 c + slli 3
                     lw a2 0(t2)                   # a0 = x0
                     lw a3 4(t2)                   # a1 = y0
 
                     #li a7 1
-                    #ecall
+                    #M_Ecall
 
                     li a4 0x07
 
                     call line
                     lw a0 0(s4)
                     li a7 1
-                    ecall
+                    M_Ecall
                     li a0 9
                     li a7 11
-                    ecall
+                    M_Ecall
 
                     addi s3 s3 -1
                     addi s4 s4 4
@@ -96,7 +96,7 @@ saii:
                     call desenha
 
                     li a7 10
-                    ecall
+                    M_Ecall
 
                     # fn (u32, [u32, u32])
                     # a0: number of elements
@@ -111,12 +111,12 @@ loop:               addi t0 t0 -2                 # decrement element count
 
                     li a0 0                       # reset seed selector
                     li a1 310                     # set upper bound
-                    ecall                         # generate random number
+                    M_Ecall                       # generate random number
                     sw a0 0(t1)                   # store random number
 
                     li a0 0                       # reset seed selector
                     li a1 230                     # set upper bound
-                    ecall                         # generate random number
+                    M_Ecall                         # generate random number
                     sw a0 4(t1)                   # store random number
 
                     bnez t0 loop                  # are we done yet?
@@ -139,7 +139,7 @@ loop2:              addi t0 t0 -2                 # decrement element count
                     lw a2 4(t2)                   # get y position
                     li a3 0x3800                  # set color (black font on green bg)
                     li a4 0                       # use frame 0
-                    ecall                         # print char
+                    M_Ecall                         # print char
 
                     bnez t0 loop2                 # are we done yet?
                     ret                           # yes we are!!
@@ -263,18 +263,18 @@ pm_loop:            mul t4 t2 t3                  # line offset
                     add t4 t4 t0                  # final address
                     flw fa0 (t4)
                     li a7 2
-                    ecall
+                    M_Ecall
 
                     li a0 ' '
                     li a7 11
-                    ecall
+                    M_Ecall
 
                     addi t1 t1 1
                     blt t1 t5 pm_loop
 
                     li a0 10
                     li a7 11
-                    ecall
+                    M_Ecall
 
                     li t1 0
                     addi t2 t2 1
@@ -356,7 +356,7 @@ olokinho:           mv a1 s1
 
 show:               #li a7, 1                      # printa o rolê
                     lw a0 0(a1)
-                    #ecall
+                    #M_Ecall
 
                     lw t2 -4(a1)
                     sw t2 0(tp)
@@ -444,7 +444,7 @@ update_path:        la t0 lowest
                     li a7 21
                     beqz t1 end
                     fsw fa0 (t0)
-loopinho:           beq a7 zero end 
+loopinho:           beq a7 zero end
                     lw a5 0(tp)
                     sw a5 0(a6)
                     addi tp tp 4
