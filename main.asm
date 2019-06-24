@@ -103,7 +103,7 @@ saii:
                     # a1: pointer to the elements
 sorteio:            slli t0 a0 1                  # multiply counter by 2 (each element is 64b)
                     mv t2 a1                      # save base address
-                    li a7 42                      # random number syscall code (won't change)
+                    li a7 41                      # random number syscall code (won't change)
 
 loop:               addi t0 t0 -2                 # decrement element count
                     slli t1 t0 2                  # calculate address offset
@@ -112,11 +112,22 @@ loop:               addi t0 t0 -2                 # decrement element count
                     li a0 0                       # reset seed selector
                     li a1 310                     # set upper bound
                     M_Ecall                       # generate random number
+                    rem a0, a0, a1
+                    ABS a0
+
+                    # li a7, 1
+                    # M_Ecall
+
+                    # li a7, 10
+                    # M_Ecall
+
                     sw a0 0(t1)                   # store random number
 
                     li a0 0                       # reset seed selector
                     li a1 230                     # set upper bound
                     M_Ecall                         # generate random number
+                    rem a0, a0, a1
+                    ABS a0
                     sw a0 4(t1)                   # store random number
 
                     bnez t0 loop                  # are we done yet?
